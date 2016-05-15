@@ -7,15 +7,41 @@ var view = {
                 console.log(position);
                 self.position = position;
                 self.initMap(position.coords.latitude, position.coords.longitude);
+                self.loadEateries(position.coords.latitude, position.coords.longitude);
             });
         } else {
             // geolocation IS NOT available 
         }
     },
 
-    init: function() {
+    loadEateries: function(latitude, longitude) {
+        $.ajax({
+            type: 'GET',
+            url: "https://developers.zomato.com/api/v2.1/search?count=10",
+            contentType: 'application/json',
+            xhrFields: {
+                withCredentials: true
+            },
+            data: {
+                lat: latitude,
+                lon: longitude
+            },
+            headers: {
+                'X-Zomato-API-Key': '38c42097628d298c85e496cd81990b3a'
+            },
+            success: function(data) {
+                // Here's where you handle a successful response.
+                console.log(data);
+            },
+            error: function() {}
+        });
+
+    }
+
+        init: function() {
         this.getLocation();
         this.updateHeight();
+
     },
 
     initMap: function(latitude, longitude) {
@@ -40,47 +66,20 @@ var view = {
     }
 
 };
-
 view.init();
 $(window).resize(view.updateHeight);
 
 
 function eatery(data) {
-	this.name = data.name;
+    this.name = data.name;
 }
 
 function AppViewModel() {
     var self = this;
-    self.restuarents = ko.observableArray([]);
+    self.eateries = ko.observableArray([]);
+    self.view = view;
 
 
 }
 
 ko.applyBindings(new AppViewModel());
-
-
-
-
-
-
-$.ajax({
-  type: 'GET',
-  url: "https://developers.zomato.com/api/v2.1/search?count=10",
-  contentType: 'application/json',
-  xhrFields: {
-    withCredentials: true
-  },
-  data : {
-  	lat: view.position.coords.latitude,
-  	lon: view.position.coords.longitude
-  },
-  headers: {
-    'X-Zomato-API-Key' : '38c42097628d298c85e496cd81990b3a'
-  },
-  success: function(data) {
-    // Here's where you handle a successful response.
-    console.log(data);
-  },
-  error: function() {
-  }
-});
