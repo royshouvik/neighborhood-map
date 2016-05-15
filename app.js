@@ -1,20 +1,24 @@
+
 var view = {
     getLocation: function() {
-        var self = this;
+        //var self = this;
         if ("geolocation" in navigator) {
             /* geolocation is available */
             view.position = navigator.geolocation.getCurrentPosition(function(position) {
                 console.log(position);
-                self.position = position;
-                self.initMap(position.coords.latitude, position.coords.longitude);
-                self.loadEateries(position.coords.latitude, position.coords.longitude);
+                view.position = position;
+                view.initMap(position.coords.latitude, position.coords.longitude);
+                view.loadPlaces(position.coords.latitude, position.coords.longitude);
             });
         } else {
             // geolocation IS NOT available 
+            console.log("geolocation not available");
+            view.initMap(40, 70);
+            view.loadPlaces(40, 70);
         }
     },
 
-    loadEateries: function(latitude, longitude) {
+    loadPlaces: function(latitude, longitude) {
         var client_secret = 'WFKH2C5QEPXP30YLDAC5BOHBXEYINQT0MQ2NERLYIJZWCUCA';
         var client_id = 'BKU2W3NNYBTNGF1GDYPLCLLIR3Q3Z0JCOVKLNZHMM5VXWVZN';
         var url = 'https://api.foursquare.com/v2/venues/search';
@@ -29,6 +33,10 @@ var view = {
             },
             success : function (data) {
             	console.log(data);
+            	var mappedVenues = $.map(data.response.venues, function(item){
+            		return new Venue(item);
+            	});
+            	self.venues(mappedVenues);
             }, 
 
             error : function () {
@@ -66,20 +74,25 @@ var view = {
     }
 
 };
-view.init();
-$(window).resize(view.updateHeight);
 
-
-function eatery(data) {
+function Venue(data) {
     this.name = data.name;
+    this.location = data.location;
 }
 
 function AppViewModel() {
     var self = this;
-    self.eateries = ko.observableArray([]);
+    self.venues = ko.observableArray([]);
     self.view = view;
+    self.view.init();
 
 
 }
 
+
+
 ko.applyBindings(new AppViewModel());
+$(window).resize(view.updateHeight);
+
+
+
