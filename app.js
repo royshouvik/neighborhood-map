@@ -15,30 +15,30 @@ var view = {
     },
 
     loadEateries: function(latitude, longitude) {
+        var client_secret = 'WFKH2C5QEPXP30YLDAC5BOHBXEYINQT0MQ2NERLYIJZWCUCA';
+        var client_id = 'BKU2W3NNYBTNGF1GDYPLCLLIR3Q3Z0JCOVKLNZHMM5VXWVZN';
+        var url = 'https://api.foursquare.com/v2/venues/search';
+        //client_id = & client_secret = % 20 & ll = 40.7, -74 % 20 & query = sushi
         $.ajax({
-            type: 'GET',
-            url: "https://developers.zomato.com/api/v2.1/search?count=10",
-            contentType: 'application/json',
-            xhrFields: {
-                withCredentials: true
-            },
+            url: url,
             data: {
-                lat: latitude,
-                lon: longitude
+                'client_id': client_id,
+                'client_secret': client_secret,
+                'v': '20130815',
+                'll': latitude +',' + longitude
             },
-            headers: {
-                'X-Zomato-API-Key': '38c42097628d298c85e496cd81990b3a'
-            },
-            success: function(data) {
-                // Here's where you handle a successful response.
-                console.log(data);
-            },
-            error: function() {}
+            success : function (data) {
+            	console.log(data);
+            }, 
+
+            error : function () {
+            	console.log("Error loading data");
+            }
         });
 
     },
 
-        init: function() {
+    init: function() {
         this.getLocation();
         this.updateHeight();
 
