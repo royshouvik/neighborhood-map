@@ -28,6 +28,7 @@ function AppViewModel() {
     };
 
     self.loadPlaces = function(latitude, longitude) {
+    	var viewmodel = this;
         var client_secret = 'WFKH2C5QEPXP30YLDAC5BOHBXEYINQT0MQ2NERLYIJZWCUCA';
         var client_id = 'BKU2W3NNYBTNGF1GDYPLCLLIR3Q3Z0JCOVKLNZHMM5VXWVZN';
         var url = 'https://api.foursquare.com/v2/venues/search';
@@ -45,7 +46,7 @@ function AppViewModel() {
                 var mappedVenues = $.map(data.response.venues, function(item) {
                     return new Venue(item);
                 });
-                self.venues(mappedVenues);
+                viewmodel.venues(mappedVenues);
             },
 
             error: function() {
@@ -57,12 +58,13 @@ function AppViewModel() {
 
 
 
-    self.getLocation = function() {
+    self.getLocation = function(cb) {
         //var self = this;
         if ("geolocation" in navigator) {
             /* geolocation is available */
               return navigator.geolocation.getCurrentPosition(function(position) {
                 console.log(position);
+                cb(position.coords.latitude, position.coords.longitude);
                 return position;
                 // view.position = position;
                 // view.initMap(position.coords.latitude, position.coords.longitude);
@@ -71,12 +73,17 @@ function AppViewModel() {
         } else {
             // geolocation IS NOT available 
             console.log("geolocation not available");
+            return {
+            	coords: {
+            		latitude: '40',
+            		longitude: '70'
+            	}
+            };
             
         }
     };
 
-    self.position = self.getLocation();
-    self.initMap(self.position.coords.latitude, self.position.coords.longitude);
+    self.position = self.getLocation(self.initMap);
     self.loadPlaces(self.position.coords.latitude, self.position.coords.longitude);
 
 
