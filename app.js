@@ -45,7 +45,7 @@
 //     $('#map').height(windowHeight);
 // }
 
-// $(window).resize(dcoumentHeight);
+$(window).resize(dcoumentHeight);
 
 
 // function AppViewModel() {
