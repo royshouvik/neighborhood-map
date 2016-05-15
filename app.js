@@ -4,7 +4,7 @@
                 /* geolocation is available */
                 view.position = navigator.geolocation.getCurrentPosition(function(position) {
                     console.log(position);
-                    return position;
+                    this.initMap(position.coords.latitude, position.coords.longitude);
                 });
             } else {
                 // geolocation IS NOT available 
@@ -13,18 +13,17 @@
 
         init: function() {
             this.getLocation();
-            this.initMap();
         },
 
-        initMap: function() {
+        initMap: function(latitude, longitude) {
             var windowHeight = $(window).height();
             $('#map').height(windowHeight);
 
             var mapDiv = document.getElementById('map');
             var map = new google.maps.Map(mapDiv, {
                 center: {
-                    lat: view.position.coords.latitude,
-                    lng: view.position.coords.longitude
+                    lat: latitude,
+                    lng: longitude
                 },
                 zoom: 15,
                 mapTypeId: google.maps.MapTypeId.ROADMAP,
