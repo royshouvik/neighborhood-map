@@ -4,7 +4,7 @@ $(function() {
         getLocation: function() {
             if ("geolocation" in navigator) {
                 /* geolocation is available */
-                this.position = navigator.geolocation.getCurrentPosition(function(position) {
+                view.position = navigator.geolocation.getCurrentPosition(function(position) {
                     console.log(position);
                     return position;
                 });
@@ -25,8 +25,8 @@ $(function() {
             var mapDiv = document.getElementById('map');
             var map = new google.maps.Map(mapDiv, {
                 center: {
-                    lat: this.position.coords.latitude,
-                    lng: this.position.coords.longitude
+                    lat: view.position.coords.latitude,
+                    lng: view.position.coords.longitude
                 },
                 zoom: 15,
                 mapTypeId: google.maps.MapTypeId.ROADMAP,
