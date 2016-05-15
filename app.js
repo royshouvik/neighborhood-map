@@ -3,32 +3,58 @@ function Venue(data) {
     this.location = data.location;
 }
 
+function Point(data, map) {
+    this.name = data.name;
+    this.lat = ko.observable(data.location.lat);
+    this.lng = ko.observable(data.location.lng);
+
+    var marker = new google.maps.Marker({
+        position: new google.maps.LatLng(data.location.lat, data.location.lng),
+        title: name,
+        map: map,
+        draggable: false
+    });
+}
+
 function AppViewModel() {
     var self = this;
+    self.search = ko.observable('');
     self.venues = ko.observableArray([]);
+    self.points = ko.observableArray([]);
+
+    self.filteredVenues = ko.computed(function() {
+        return ko.utils.arrayFilter(self.venues(), function(rec) {
+            return (
+                (self.search().length === 0 || rec.name.toLowerCase().indexOf(self.search().toLowerCase()) > -1)
+            );
+        });
+    });
+
+
     self.updateHeight = function() {
         var windowHeight = $(window).height();
         $('#map').height(windowHeight);
     };
 
-    self.initMap = function(latitude, longitude) {
+    self.initMap = function(latitude, longitude, viewmodel) {
         var windowHeight = $(window).height();
         $('#map').height(windowHeight);
 
         var mapDiv = document.getElementById('map');
-        var map = new google.maps.Map(mapDiv, {
+        viewmodel.map = new google.maps.Map(mapDiv, {
             center: {
                 lat: latitude,
                 lng: longitude
             },
-            zoom: 15,
+            zoom: 17,
             mapTypeId: google.maps.MapTypeId.ROADMAP,
             disableDefaultUI: true
         });
+
     };
 
     self.loadPlaces = function(latitude, longitude) {
-    	var viewmodel = this;
+        var viewmodel = this;
         var client_secret = 'WFKH2C5QEPXP30YLDAC5BOHBXEYINQT0MQ2NERLYIJZWCUCA';
         var client_id = 'BKU2W3NNYBTNGF1GDYPLCLLIR3Q3Z0JCOVKLNZHMM5VXWVZN';
         var url = 'https://api.foursquare.com/v2/venues/search';
@@ -39,7 +65,7 @@ function AppViewModel() {
                 'client_id': client_id,
                 'client_secret': client_secret,
                 'v': '20130815',
-                'limit' : 15,
+                'limit': 15,
                 'll': latitude + ',' + longitude,
                 //'query': 'restaurent'
             },
@@ -48,7 +74,11 @@ function AppViewModel() {
                 var mappedVenues = $.map(data.response.venues, function(item) {
                     return new Venue(item);
                 });
+                var mappedPoints = $.map(data.response.venues, function(item) {
+                    return new Point(item, viewmodel.map);
+                });
                 viewmodel.venues(mappedVenues);
+                viewmodel.points(mappedPoints);
             },
 
             error: function() {
@@ -59,17 +89,17 @@ function AppViewModel() {
     };
 
 
-
     self.getLocation = function(cb) {
         //var self = this;
+        var viewmodel = this;
 
         // Temp fix for local testing
-        cb(28.4702983, 77.0152425);
+        cb(28.4702983, 77.0152425, viewmodel);
         return {
-        	coords : {
-        		latitude: 28.4702983,
-        		longitude: 77.0152425
-        	}
+            coords: {
+                latitude: 28.4702983,
+                longitude: 77.0152425
+            }
         };
 
 
@@ -95,10 +125,12 @@ function AppViewModel() {
 
 
 
-
 }
 
 
 
 ko.applyBindings(new AppViewModel());
-// $(window).resize(view.updateHeight);
+$(window).resize(function() {
+    var windowHeight = $(window).height();
+    $('#map').height(windowHeight);
+});

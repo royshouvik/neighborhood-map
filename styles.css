@@ -30,6 +30,17 @@ body,
     padding-left: 0;
 }
 
+h2 {
+
+    display: block;
+    position: fixed;
+    top: 2%;
+    left: 45%;
+    z-index: 2;
+    color: darkslateblue;
+
+}
+
 @media screen and (min-width: 1020px) {
     .drawer {
         width: 370px;
