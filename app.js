@@ -1,10 +1,11 @@
     var view = {
         getLocation: function() {
+        	var self = this;
             if ("geolocation" in navigator) {
                 /* geolocation is available */
                 view.position = navigator.geolocation.getCurrentPosition(function(position) {
                     console.log(position);
-                    this.initMap(position.coords.latitude, position.coords.longitude);
+                    self.initMap(position.coords.latitude, position.coords.longitude);
                 });
             } else {
                 // geolocation IS NOT available 
