@@ -36,7 +36,7 @@ var view = {
             error: function() {}
         });
 
-    }
+    },
 
         init: function() {
         this.getLocation();
