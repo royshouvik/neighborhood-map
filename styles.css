@@ -29,3 +29,9 @@ body,
 .mdl-navigation {
     padding-left: 0;
 }
+
+@media screen and (min-width: 1020px) {
+    .drawer {
+        width: 370px;
+    }
+}

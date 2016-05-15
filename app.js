@@ -39,7 +39,9 @@ function AppViewModel() {
                 'client_id': client_id,
                 'client_secret': client_secret,
                 'v': '20130815',
-                'll': latitude + ',' + longitude
+                'limit' : 15,
+                'll': latitude + ',' + longitude,
+                //'query': 'restaurent'
             },
             success: function(data) {
                 console.log(data);
@@ -60,27 +62,32 @@ function AppViewModel() {
 
     self.getLocation = function(cb) {
         //var self = this;
-        if ("geolocation" in navigator) {
-            /* geolocation is available */
-              return navigator.geolocation.getCurrentPosition(function(position) {
-                console.log(position);
-                cb(position.coords.latitude, position.coords.longitude);
-                return position;
-                // view.position = position;
-                // view.initMap(position.coords.latitude, position.coords.longitude);
-                // view.loadPlaces(position.coords.latitude, position.coords.longitude);
-            });
-        } else {
-            // geolocation IS NOT available 
-            console.log("geolocation not available");
-            return {
-            	coords: {
-            		latitude: '40',
-            		longitude: '70'
-            	}
-            };
-            
-        }
+
+        // Temp fix for local testing
+        cb(28.4702983, 77.0152425);
+        return {
+        	coords : {
+        		latitude: 28.4702983,
+        		longitude: 77.0152425
+        	}
+        };
+
+
+        //Uncomment below code when finalised
+        // if ("geolocation" in navigator) {
+        //     /* geolocation is available */
+        //       return navigator.geolocation.getCurrentPosition(function(position) {
+        //         console.log(position);
+        //         cb(position.coords.latitude, position.coords.longitude);
+        //         return position;
+        //         // view.position = position;
+        //         // view.initMap(position.coords.latitude, position.coords.longitude);
+        //         // view.loadPlaces(position.coords.latitude, position.coords.longitude);
+        //     });
+        // } else {
+        //     // geolocation IS NOT available 
+        //     console.log("geolocation not available");            
+        // }
     };
 
     self.position = self.getLocation(self.initMap);
