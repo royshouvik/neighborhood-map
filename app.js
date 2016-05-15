@@ -1,33 +1,64 @@
-function getlocation() {
-    if ("geolocation" in navigator) {
-        /* geolocation is available */
-        navigator.geolocation.getCurrentPosition(function(position) {
-        	console.log(position);
-            return position;
-        });
-    } else {
-         // geolocation IS NOT available 
-    }
-}
+$(function() {
+
+    var view = {
+        getLocation: function() {
+            if ("geolocation" in navigator) {
+                /* geolocation is available */
+                this.position = navigator.geolocation.getCurrentPosition(function(position) {
+                    console.log(position);
+                    return position;
+                });
+            } else {
+                // geolocation IS NOT available 
+            }
+        },
+
+        init: function() {
+            this.getLocation();
+            this.initMap();
+        },
+
+        initMap: function() {
+            var windowHeight = $(window).height();
+            $('#map').height(windowHeight);
+
+            var mapDiv = document.getElementById('map');
+            var map = new google.maps.Map(mapDiv, {
+                center: {
+                    lat: this.position.coords.latitude,
+                    lng: this.position.coords.longitude
+                },
+                zoom: 15,
+                mapTypeId: google.maps.MapTypeId.ROADMAP,
+                disableDefaultUI: true
+            });
+        }
+    };
+
+    view.init();
+
+
+});
 
 
 
-function dcoumentHeight() {
-    var windowHeight = $(window).height();
-    $('#map').height(windowHeight);
-}
 
-$(window).resize(dcoumentHeight);
+// function dcoumentHeight() {
+//     var windowHeight = $(window).height();
+//     $('#map').height(windowHeight);
+// }
+
+// $(window).resize(dcoumentHeight);
 
 
-function AppViewModel() {
-    var self = this;
-    self.restuarents = ko.observableArray([]);
-    self.position = getlocation();
+// function AppViewModel() {
+//     var self = this;
+//     self.restuarents = ko.observableArray([]);
+//     self.position = getlocation();
 
-}
+// }
 
-ko.applyBindings(new AppViewModel());
+// ko.applyBindings(new AppViewModel());
 
 
 
