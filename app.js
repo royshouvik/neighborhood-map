@@ -2,6 +2,7 @@ function getlocation() {
     if ("geolocation" in navigator) {
         /* geolocation is available */
         navigator.geolocation.getCurrentPosition(function(position) {
+        	console.log(position);
             return position;
         });
     } else {
