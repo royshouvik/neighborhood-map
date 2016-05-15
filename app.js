@@ -1,5 +1,3 @@
-$(function() {
-
     var view = {
         getLocation: function() {
             if ("geolocation" in navigator) {
@@ -38,7 +36,6 @@ $(function() {
     view.init();
 
 
-});
 
 
 
